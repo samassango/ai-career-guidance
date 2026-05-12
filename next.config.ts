@@ -1,7 +1,16 @@
-import type { NextConfig } from "next";
+// import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+// const nextConfig: NextConfig = {
+//   cacheComponents: true
+// };
+
+// export default nextConfig;
+
+module.exports = {
   cacheComponents: true,
-};
-
-export default nextConfig;
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
+}
