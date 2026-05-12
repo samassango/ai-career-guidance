@@ -79,6 +79,8 @@ export const getRecommendations = async (data: {
             }
         });
 
+        console.log({data, subjects});
+
         const res = await fetch("https://acgs-ai-engine.vercel.app/api/predict", {
             method: "POST",
             headers: {

@@ -76,17 +76,18 @@ const ResultsDashboard = ({ assessmentData, onBack, onRetake }: ResultsDashboard
   const recommendationsNew = useSelector((state: RootState) => state.recommendations);
   useEffect(() => {
     (async () => {
-      setIsLoading(true);
+      // setIsLoading(true);
       setError(null);
       try {
-        const reccomendationData = await loadRecommendations(assessmentData);
+        await loadRecommendations(assessmentData);
       } catch (err) {
         // Error is handled inside loadRecommendations
-      } finally {
-        setIsLoading(false);
       }
+      //  finally {
+      //   setIsLoading(false);
+      // }
     })();
-  }, [retryCount])
+  }, [])
 
   // Load saved career names on mount
   useEffect(() => {
@@ -146,6 +147,7 @@ const ResultsDashboard = ({ assessmentData, onBack, onRetake }: ResultsDashboard
   }, [recommendationsObject, overallConfidence]);
 
   const loadRecommendations = async (assessmentData: AssessmentData) => {
+     setIsLoading(true);
     try {
       const recommendations = await getRecommendations({
         subject: assessmentData.subjects,
@@ -154,19 +156,8 @@ const ResultsDashboard = ({ assessmentData, onBack, onRetake }: ResultsDashboard
         personality: assessmentData.personalityTraits
       });
 
-      if (!recommendations || recommendations.error) {
-        throw new Error(
-          recommendations?.error || "The AI engine did not return valid recommendations."
-        );
-      }
-
-      if (!recommendations.data?.recommendations || recommendations.data.recommendations.length === 0) {
-        throw new Error(
-          "No career recommendations could be generated from your profile. Please try adjusting your skills or interests."
-        );
-      }
-
       dispatch(addRecommendations(recommendations));
+       setIsLoading(false);
       return recommendations;
     } catch (err: unknown) {
       console.error("Recommendation error:", err);
@@ -177,6 +168,7 @@ const ResultsDashboard = ({ assessmentData, onBack, onRetake }: ResultsDashboard
             : err.message
           : "We could not generate recommendations right now. Please try again.";
       setError(message);
+       setIsLoading(false);
       throw err;
     }
   }
